@@ -7,6 +7,7 @@ import {
   AlertTriangle,
   ArrowUpRight,
   RefreshCw,
+  Store
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -119,82 +120,96 @@ export const ManagerDashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Title & Actions */}
+      {/* Title & Live Status Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Supermarket Operations & Analytics</h1>
-          <p className="text-sm text-slate-500">Live overview of store revenue, queue velocity, and checkout lanes.</p>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="w-2 h-2 rounded-full bg-[#007AB7] animate-pulse" />
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#007AB7] font-semibold">
+              REAL-TIME OPERATIONS CENTER
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-heading font-black text-white tracking-tight uppercase">
+            Store <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#007AB7] to-[#FF2D95]">Executive Matrix</span>
+          </h1>
+          <p className="text-xs text-slate-400 font-mono mt-0.5">
+            Synchronized telemetry: revenue velocity, lane density, and automated stock surveillance.
+          </p>
         </div>
 
         <button
           onClick={loadDashboardData}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-sm transition"
+          className="flex items-center gap-2 px-4 py-2 bg-[#111318] hover:bg-[#171A21] border border-white/10 hover:border-[#007AB7]/50 rounded-xl text-xs font-mono font-semibold text-slate-200 transition shadow-sm"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          <span>Refresh Data</span>
+          <RefreshCw className={`w-3.5 h-3.5 text-[#007AB7] ${loading ? 'animate-spin' : ''}`} />
+          <span>Sync Matrix</span>
         </button>
       </div>
 
-      {/* KPI Cards */}
+      {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
-            <span>Today's Revenue</span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+        {/* Card 1: Revenue */}
+        <div className="glass-panel p-5 rounded-2xl border border-white/10 relative overflow-hidden group hover:border-[#007AB7]/50 transition duration-200">
+          <div className="flex items-center justify-between text-slate-400 text-[11px] font-mono uppercase tracking-wider">
+            <span>Gross Revenue Today</span>
+            <div className="w-9 h-9 rounded-xl bg-[#007AB7]/20 border border-[#007AB7]/30 text-[#007AB7] flex items-center justify-center shadow-glow-blue">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3 text-2xl font-black text-slate-900 font-mono">
+          <div className="mt-3 text-2xl sm:text-3xl font-mono font-extrabold text-white tracking-tight">
             {formatCurrency(stats.totalRevenue)}
           </div>
-          <div className="mt-2 text-xs text-emerald-600 font-medium flex items-center gap-1">
-            <ArrowUpRight className="w-3.5 h-3.5" />
-            <span>{stats.paidOrdersCount} Paid Orders</span>
+          <div className="mt-2 text-xs text-emerald-400 font-mono flex items-center gap-1">
+            <ArrowUpRight className="w-3.5 h-3.5 text-emerald-400" />
+            <span>{stats.paidOrdersCount} Paid Transactions</span>
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
+        {/* Card 2: Orders Placed */}
+        <div className="glass-panel p-5 rounded-2xl border border-white/10 relative overflow-hidden group hover:border-[#FF2D95]/50 transition duration-200">
+          <div className="flex items-center justify-between text-slate-400 text-[11px] font-mono uppercase tracking-wider">
             <span>Total Orders Placed</span>
-            <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-[#FF2D95]/20 border border-[#FF2D95]/30 text-[#FF2D95] flex items-center justify-center shadow-glow-rose">
               <ShoppingBag className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3 text-2xl font-black text-slate-900 font-mono">
-            {stats.totalOrders} Orders
+          <div className="mt-3 text-2xl sm:text-3xl font-mono font-extrabold text-white tracking-tight">
+            {stats.totalOrders} <span className="text-sm text-slate-400 font-normal">Orders</span>
           </div>
-          <div className="mt-2 text-xs text-slate-500 font-medium">
-            Avg basket: {formatCurrency(stats.avgOrderValue)}
+          <div className="mt-2 text-xs text-slate-400 font-mono">
+            Avg basket: <span className="text-slate-200 font-semibold">{formatCurrency(stats.avgOrderValue)}</span>
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
-            <span>Active Queue Waiting</span>
-            <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center">
+        {/* Card 3: Active Waiting Queue */}
+        <div className="glass-panel p-5 rounded-2xl border border-white/10 relative overflow-hidden group hover:border-[#007AB7]/50 transition duration-200">
+          <div className="flex items-center justify-between text-slate-400 text-[11px] font-mono uppercase tracking-wider">
+            <span>Live Queue Load</span>
+            <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/30 text-amber-400 flex items-center justify-center">
               <Users className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3 text-2xl font-black text-slate-900 font-mono">
-            {stats.waitingTickets} Customers
+          <div className="mt-3 text-2xl sm:text-3xl font-mono font-extrabold text-white tracking-tight">
+            {stats.waitingTickets} <span className="text-sm text-slate-400 font-normal">Waiting</span>
           </div>
-          <div className="mt-2 text-xs text-amber-600 font-medium">
-            Across {stats.activeCounters} active lanes
+          <div className="mt-2 text-xs text-amber-400 font-mono">
+            Across {stats.activeCounters} operational lanes
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between text-slate-500 text-xs font-semibold uppercase tracking-wider">
-            <span>Avg Wait Time</span>
-            <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center">
+        {/* Card 4: Average Wait Time */}
+        <div className="glass-panel p-5 rounded-2xl border border-white/10 relative overflow-hidden group hover:border-[#FF2D95]/50 transition duration-200">
+          <div className="flex items-center justify-between text-slate-400 text-[11px] font-mono uppercase tracking-wider">
+            <span>Avg Lane Latency</span>
+            <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/30 text-purple-400 flex items-center justify-center">
               <Clock className="w-4 h-4" />
             </div>
           </div>
-          <div className="mt-3 text-2xl font-black text-slate-900 font-mono">
-            ~{stats.avgWaitMinutes} Mins
+          <div className="mt-3 text-2xl sm:text-3xl font-mono font-extrabold text-white tracking-tight">
+            ~{stats.avgWaitMinutes} <span className="text-sm text-slate-400 font-normal">Mins</span>
           </div>
-          <div className="mt-2 text-xs text-emerald-600 font-medium">
-            {stats.completedTicketsToday} tickets served today
+          <div className="mt-2 text-xs text-emerald-400 font-mono">
+            {stats.completedTicketsToday} shoppers served today
           </div>
         </div>
       </div>
@@ -202,49 +217,82 @@ export const ManagerDashboardPage: React.FC = () => {
       {/* Main Charts & Live Lanes Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Velocity Chart */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+        <div className="lg:col-span-2 glass-panel p-6 rounded-2xl border border-white/10 flex flex-col justify-between">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-base font-bold text-slate-900">Revenue Velocity & Trends</h2>
-              <p className="text-xs text-slate-500">Real-time revenue accumulation from verified checkout transactions</p>
+              <h2 className="text-base font-heading font-bold text-white flex items-center gap-2">
+                <span>Revenue Trajectory & Velocity</span>
+                <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-[#007AB7]/20 text-[#007AB7] border border-[#007AB7]/30">
+                  DAILY TREND
+                </span>
+              </h2>
+              <p className="text-xs text-slate-400 font-mono mt-0.5">
+                Real-time transaction inflow from authenticated cashier stations
+              </p>
             </div>
           </div>
 
-          <div className="h-64 w-full">
+          <div className="h-64 w-full pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={salesTrend}>
                 <defs>
-                  <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                  <linearGradient id="cyberRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#007AB7" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#007AB7" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="date" stroke="#94a3b8" fontSize={11} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="date" stroke="#64748B" fontSize={11} tickLine={false} />
                 <YAxis
-                  stroke="#94a3b8"
+                  stroke="#64748B"
                   fontSize={11}
+                  tickLine={false}
                   tickFormatter={(val) => `₹${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`}
                 />
                 <Tooltip
-                  formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Revenue']}
-                  contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
+                  formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Gross Inflow']}
+                  contentStyle={{
+                    backgroundColor: '#0B0D11',
+                    border: '1px solid rgba(0,122,183,0.4)',
+                    borderRadius: '12px',
+                    color: '#fff',
+                    boxShadow: '0 0 15px rgba(0,122,183,0.3)',
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '12px'
+                  }}
                 />
-                <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={2.5} fillOpacity={1} fill="url(#colorSales)" />
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#007AB7"
+                  strokeWidth={2.5}
+                  fillOpacity={1}
+                  fill="url(#cyberRevenue)"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Live Counters Lane Status */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div className="glass-panel p-6 rounded-2xl border border-white/10 flex flex-col justify-between">
           <div>
-            <h2 className="text-base font-bold text-slate-900 mb-1">Live Counter Lanes</h2>
-            <p className="text-xs text-slate-500 mb-4">Real-time counter load & cashiers</p>
+            <div className="flex items-center justify-between mb-1">
+              <h2 className="text-base font-heading font-bold text-white flex items-center gap-2">
+                <Store className="w-4 h-4 text-[#FF2D95]" />
+                <span>Active Checkout Lanes</span>
+              </h2>
+              <span className="text-[10px] font-mono text-[#007AB7] px-2 py-0.5 rounded bg-[#007AB7]/10 border border-[#007AB7]/30">
+                LIVE
+              </span>
+            </div>
+            <p className="text-xs text-slate-400 font-mono mb-4">Cashier assignments & state</p>
 
             <div className="space-y-3">
               {counters.length === 0 ? (
-                <div className="p-4 text-center text-xs text-slate-400">Loading checkout lanes...</div>
+                <div className="p-6 text-center text-xs font-mono text-slate-500">
+                  Synchronizing checkout lanes...
+                </div>
               ) : (
                 counters.map((lane) => {
                   const cashierName =
@@ -257,18 +305,20 @@ export const ManagerDashboardPage: React.FC = () => {
                   return (
                     <div
                       key={lane._id || lane.id}
-                      className="p-3 bg-slate-50 rounded-lg border border-slate-200 flex items-center justify-between"
+                      className="p-3 bg-[#111318] rounded-xl border border-white/10 flex items-center justify-between hover:border-white/20 transition"
                     >
                       <div>
-                        <div className="text-xs font-bold text-slate-800">
-                          {lane.name || `Counter ${lane.counterNumber}`}
+                        <div className="text-xs font-heading font-bold text-white flex items-center gap-1.5">
+                          <span>{lane.name || `Counter ${lane.counterNumber}`}</span>
                         </div>
-                        <div className="text-[11px] text-slate-500">{cashierName}</div>
+                        <div className="text-[11px] text-slate-400 font-mono mt-0.5">{cashierName}</div>
                       </div>
                       <div className="text-right">
                         <span
-                          className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
-                            isOpen ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'
+                          className={`inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${
+                            isOpen
+                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                              : 'bg-slate-800 text-slate-400 border-white/10'
                           }`}
                         >
                           {lane.status}
@@ -285,9 +335,9 @@ export const ManagerDashboardPage: React.FC = () => {
           </div>
 
           {lowStockCount > 0 && (
-            <div className="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2 text-xs text-amber-700 bg-amber-50 p-2.5 rounded-lg border border-amber-200">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
-              <span>{lowStockCount} product(s) are approaching low-stock threshold.</span>
+            <div className="mt-4 pt-4 border-t border-white/10 flex items-center gap-2.5 text-xs text-amber-300 bg-amber-500/10 p-3 rounded-xl border border-amber-500/30 font-mono">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400" />
+              <span>{lowStockCount} product(s) flagged at reorder threshold.</span>
             </div>
           )}
         </div>

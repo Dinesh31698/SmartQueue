@@ -14,11 +14,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smartqueue.app.ui.theme.PrimaryGreen
+import com.smartqueue.app.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,20 +32,25 @@ fun BarcodeScannerScreen(
     var showManualDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = JetBlack,
         topBar = {
             TopAppBar(
-                title = { Text("Scan Product Barcode", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = JetBlack,
+                    titleContentColor = TextPrimary
+                ),
+                title = { Text("Vision Barcode Scanner", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = TextPrimary)
                     }
                 },
                 actions = {
                     IconButton(onClick = { showManualDialog = true }) {
-                        Icon(Icons.Default.Search, contentDescription = "Manual Code")
+                        Icon(Icons.Default.Search, contentDescription = "Manual Code", tint = CeruleanBlue)
                     }
                     IconButton(onClick = {}) {
-                        Icon(Icons.Default.FlashOn, contentDescription = "Flash")
+                        Icon(Icons.Default.FlashOn, contentDescription = "Flash", tint = NeonRose)
                     }
                 }
             )
@@ -54,24 +60,33 @@ fun BarcodeScannerScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color.Black),
+                .background(JetBlack),
             contentAlignment = Alignment.Center
         ) {
-            // Viewfinder Target Frame
+            // Futuristic Viewfinder Target Frame
             Box(
                 modifier = Modifier
                     .size(280.dp)
-                    .background(Color.Transparent)
+                    .background(Color.Transparent),
+                contentAlignment = Alignment.Center
             ) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    shape = RoundedCornerShape(16.dp),
+                    shape = RoundedCornerShape(20.dp),
                     color = Color.Transparent,
-                    border = BorderStroke(3.dp, PrimaryGreen)
+                    border = BorderStroke(2.dp, CeruleanBlue)
                 ) {}
+
+                // Laser scanline indicator
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .height(2.dp)
+                        .background(NeonRose)
+                )
             }
 
-            // Top Quick Barcode Simulator Buttons (Especially helpful in Emulator & Testing)
+            // Quick Barcode Simulator Buttons for Emulator Testing
             Column(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
@@ -79,213 +94,203 @@ fun BarcodeScannerScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Tap to simulate scanner in emulator:",
-                    color = Color.LightGray,
-                    fontSize = 11.sp
+                    text = "Vision Scanner Simulator (ML Kit Active):",
+                    color = TextSecondary,
+                    fontSize = 11.sp,
+                    fontFamily = FontFamily.Monospace
                 )
                 Spacer(modifier = Modifier.height(6.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(
                         onClick = { viewModel.onBarcodeDetected("8901262010114") },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                        colors = ButtonDefaults.buttonColors(containerColor = SurfaceElevated),
+                        border = BorderStroke(1.dp, BorderLuminous),
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                     ) {
-                        Text("Amul Milk", fontSize = 11.sp)
+                        Text("Amul Milk", fontSize = 11.sp, color = TextPrimary)
                     }
                     Button(
                         onClick = { viewModel.onBarcodeDetected("8901030383321") },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                        colors = ButtonDefaults.buttonColors(containerColor = SurfaceElevated),
+                        border = BorderStroke(1.dp, BorderLuminous),
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                     ) {
-                        Text("Atta 5kg", fontSize = 11.sp)
+                        Text("Atta 5kg", fontSize = 11.sp, color = TextPrimary)
                     }
                     Button(
-                        onClick = { viewModel.onBarcodeDetected("8901725181122") },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray),
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
+                        onClick = { viewModel.onBarcodeDetected("8901058852441") },
+                        colors = ButtonDefaults.buttonColors(containerColor = SurfaceElevated),
+                        border = BorderStroke(1.dp, BorderRose),
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
                     ) {
-                        Text("Bread", fontSize = 11.sp)
+                        Text("Maggi", fontSize = 11.sp, color = NeonRose)
                     }
                 }
             }
 
-            // Bottom Instructions & Manual Entry Button
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "Align barcode within the green frame",
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                Text(
-                    text = "Supports EAN-13, EAN-8, UPC, and QR Codes",
-                    color = Color.LightGray,
-                    fontSize = 12.sp,
-                    modifier = Modifier.padding(top = 2.dp, bottom = 12.dp)
-                )
-
-                OutlinedButton(
-                    onClick = { showManualDialog = true },
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
-                    border = BorderStroke(1.dp, Color.Gray),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-                    Text("Type Barcode Manually")
-                }
-            }
-
-            // Scanned Product Result Overlay Card
-            uiState.scannedProduct?.let { product ->
+            // Lookup Error Banner
+            uiState.errorMessage?.let { errorMsg ->
                 Card(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
                         .padding(16.dp),
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                    colors = CardDefaults.cardColors(containerColor = SurfaceElevated),
+                    border = BorderStroke(1.dp, BorderRose)
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = errorMsg,
+                            color = NeonRose,
+                            fontSize = 13.sp,
+                            fontFamily = FontFamily.Monospace,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.Top
+                            horizontalArrangement = Arrangement.End
                         ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = product.name,
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp
-                                )
-                                Text(
-                                    text = "${product.brand} • ${product.aisleLocation ?: "Aisle 1"}",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = Color.Gray
-                                )
-                                Text(
-                                    text = "Barcode: ${product.barcode}",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = Color.DarkGray
-                                )
-                            }
-                            Text(
-                                text = "₹${product.price.toInt()}",
-                                fontWeight = FontWeight.Black,
-                                fontSize = 18.sp,
-                                color = PrimaryGreen
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(14.dp))
-
-                        if (uiState.isAddedToCart) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(Icons.Default.CheckCircle, contentDescription = null, tint = PrimaryGreen)
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text("Added to Cart!", color = PrimaryGreen, fontWeight = FontWeight.Bold)
-                            }
-                            Spacer(modifier = Modifier.height(8.dp))
                             Button(
                                 onClick = { viewModel.dismissProduct() },
-                                modifier = Modifier.fillMaxWidth(),
-                                colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
+                                colors = ButtonDefaults.buttonColors(containerColor = SurfaceSecondary),
+                                border = BorderStroke(1.dp, BorderRose)
                             ) {
-                                Text("Scan Next Product")
-                            }
-                        } else {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                OutlinedButton(
-                                    onClick = { viewModel.dismissProduct() },
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text("Cancel")
-                                }
-                                Button(
-                                    onClick = { viewModel.addScannedProductToCart() },
-                                    modifier = Modifier.weight(1f),
-                                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
-                                ) {
-                                    Text("+ Add to Cart")
-                                }
+                                Text("Dismiss & Retry", color = TextPrimary, fontSize = 12.sp)
                             }
                         }
                     }
                 }
             }
 
-            // Error Toast Bar
-            uiState.errorMessage?.let { error ->
+            // Bottom Status / Scanned Product Popup
+            uiState.scannedProduct?.let { product ->
                 Card(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
                         .padding(16.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFEE2E2))
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceElevated),
+                    border = BorderStroke(1.dp, BorderLuminous)
                 ) {
                     Column(
-                        modifier = Modifier.padding(14.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
                     ) {
-                        Text(text = error, color = Color(0xFF991B1B), fontSize = 13.sp)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.CheckCircle,
+                                contentDescription = null,
+                                tint = CeruleanGlow
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                "SKU Barcode Detected",
+                                fontWeight = FontWeight.Bold,
+                                color = CeruleanGlow,
+                                fontSize = 13.sp,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
                         Spacer(modifier = Modifier.height(8.dp))
-                        Button(
-                            onClick = { viewModel.dismissProduct() },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDC2626))
+                        Text(
+                            product.name,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp,
+                            color = TextPrimary
+                        )
+                        Text(
+                            "${product.brand} • ${product.aisleLocation ?: "Aisle 1"}",
+                            fontSize = 12.sp,
+                            color = TextSecondary
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Try Again")
+                            Text(
+                                "₹${product.price.toInt()}",
+                                fontWeight = FontWeight.Black,
+                                fontSize = 18.sp,
+                                fontFamily = FontFamily.Monospace,
+                                color = TextPrimary
+                            )
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                OutlinedButton(
+                                    onClick = { viewModel.dismissProduct() },
+                                    border = BorderStroke(1.dp, BorderLuminous)
+                                ) {
+                                    Text("Dismiss", color = TextSecondary)
+                                }
+                                Button(
+                                    onClick = { viewModel.addScannedProductToCart() },
+                                    colors = ButtonDefaults.buttonColors(containerColor = CeruleanBlue)
+                                ) {
+                                    Text("Add to Cart", color = Color.White, fontWeight = FontWeight.Bold)
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
-    }
 
-    // Manual Barcode Dialog
-    if (showManualDialog) {
-        AlertDialog(
-            onDismissRequest = { showManualDialog = false },
-            title = { Text("Enter Barcode Number") },
-            text = {
-                OutlinedTextField(
-                    value = manualBarcodeInput,
-                    onValueChange = { manualBarcodeInput = it },
-                    placeholder = { Text("e.g. 8901262010114") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        if (manualBarcodeInput.isNotBlank()) {
-                            viewModel.onBarcodeDetected(manualBarcodeInput)
-                            showManualDialog = false
-                            manualBarcodeInput = ""
+            // Manual Barcode Dialog
+            if (showManualDialog) {
+                AlertDialog(
+                    onDismissRequest = { showManualDialog = false },
+                    containerColor = SurfaceElevated,
+                    title = { Text("Manual SKU Entry", fontWeight = FontWeight.Bold, color = TextPrimary) },
+                    text = {
+                        Column {
+                            Text("Enter 13-digit EAN barcode:", color = TextSecondary, fontSize = 12.sp)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedTextField(
+                                value = manualBarcodeInput,
+                                onValueChange = { manualBarcodeInput = it },
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = { Text("e.g. 8901262010114", color = TextMuted) },
+                                singleLine = true,
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = SurfaceSecondary,
+                                    unfocusedContainerColor = SurfaceSecondary,
+                                    focusedTextColor = TextPrimary,
+                                    unfocusedTextColor = TextPrimary,
+                                    focusedBorderColor = CeruleanBlue,
+                                    unfocusedBorderColor = BorderLuminous
+                                )
+                            )
                         }
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
-                ) {
-                    Text("Lookup")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showManualDialog = false }) {
-                    Text("Cancel")
-                }
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                if (manualBarcodeInput.isNotBlank()) {
+                                    viewModel.onBarcodeDetected(manualBarcodeInput.trim())
+                                    showManualDialog = false
+                                    manualBarcodeInput = ""
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = CeruleanBlue)
+                        ) {
+                            Text("Lookup SKU", color = Color.White, fontWeight = FontWeight.Bold)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showManualDialog = false }) {
+                            Text("Cancel", color = TextSecondary)
+                        }
+                    }
+                )
             }
-        )
+        }
     }
 }

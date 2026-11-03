@@ -5,11 +5,17 @@ import { Header } from '../components/common/Header';
 
 export const MainLayout: React.FC = () => {
   return (
-    <div className="flex min-h-screen bg-slate-50 w-full">
+    <div className="flex min-h-screen bg-[#0A0A0A] text-slate-100 font-sans selection:bg-[#FF2D95] selection:text-white w-full relative">
+      {/* Background cybernetic grid */}
+      <div className="fixed inset-0 bg-cyber-grid opacity-15 pointer-events-none z-0" />
+      
+      {/* Sidebar */}
       <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0">
+
+      {/* Main Content Pane */}
+      <div className="flex-1 flex flex-col min-w-0 relative z-10">
         <Header />
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 lg:p-8 overflow-y-auto">
           <Outlet />
         </main>
       </div>

@@ -151,43 +151,49 @@ export const SettingsPage: React.FC = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center">
-          <Settings className="w-5 h-5" />
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#007AB7] to-[#FF2D95] p-0.5 shadow-glow-dual flex items-center justify-center">
+          <div className="w-full h-full bg-[#0A0A0A] rounded-[9px] flex items-center justify-center">
+            <Settings className="w-5 h-5 text-white" />
+          </div>
         </div>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">System & Supermarket Settings</h1>
-          <p className="text-sm text-slate-500">Configure supermarket rules, queue parameters, and manage staff accounts</p>
+          <h1 className="text-2xl sm:text-3xl font-heading font-black text-white tracking-tight uppercase">
+            System & Store <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#007AB7] to-[#FF2D95]">Parameters</span>
+          </h1>
+          <p className="text-xs text-slate-400 font-mono mt-0.5">
+            Configure supermarket rules, virtual queue thresholds, and authenticated staff credentials.
+          </p>
         </div>
       </div>
 
       {statusMessage && (
-        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 text-xs font-semibold flex items-center gap-2">
-          <CheckCircle className="w-4 h-4 text-emerald-600" />
+        <div className="p-3.5 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs font-mono flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 text-emerald-400" />
           <span>{statusMessage}</span>
         </div>
       )}
 
       {errorMessage && (
-        <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-xs font-semibold flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 text-rose-500" />
+        <div className="p-3.5 bg-rose-500/10 border border-rose-500/30 rounded-xl text-rose-300 text-xs font-mono flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-rose-400" />
           <span>{errorMessage}</span>
         </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Store Operating Rules Form */}
-        <form onSubmit={handleSaveSettings} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <form onSubmit={handleSaveSettings} className="glass-panel p-6 rounded-2xl border border-white/10 space-y-4 font-mono">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10">
             <div className="flex items-center gap-2">
-              <Store className="w-4 h-4 text-emerald-600" />
-              <h2 className="text-sm font-bold text-slate-800">Store Parameters ({storeName})</h2>
+              <Store className="w-4 h-4 text-[#007AB7]" />
+              <h2 className="text-xs font-bold text-white uppercase tracking-wider">Store Rules ({storeName})</h2>
             </div>
-            <span className="text-xs font-mono text-slate-400">STORE-001</span>
+            <span className="text-[10px] text-slate-500 font-mono">STORE-001</span>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">
+              <label className="block text-[10px] text-slate-400 uppercase mb-1">
                 Max Queue Per Lane
               </label>
               <input
@@ -198,13 +204,13 @@ export const SettingsPage: React.FC = () => {
                 onChange={(e) =>
                   setSettings({ ...settings, maxQueuePerLane: parseInt(e.target.value, 10) })
                 }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2 bg-[#111318] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#007AB7]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">
-                Avg Service Benchmark (Mins)
+              <label className="block text-[10px] text-slate-400 uppercase mb-1">
+                Avg Benchmark (Mins)
               </label>
               <input
                 type="number"
@@ -217,57 +223,57 @@ export const SettingsPage: React.FC = () => {
                     defaultEstimatedWaitPerCustomerMinutes: parseFloat(e.target.value),
                   })
                 }
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2 bg-[#111318] border border-white/10 rounded-xl text-white text-xs focus:outline-none focus:border-[#007AB7]"
               />
             </div>
           </div>
 
-          <div className="space-y-3 pt-2">
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
-              <div className="flex items-center gap-2.5">
-                <Smartphone className="w-4 h-4 text-slate-600" />
+          <div className="space-y-3 pt-2 text-xs">
+            <div className="flex items-center justify-between p-3.5 bg-[#111318] rounded-xl border border-white/10">
+              <div className="flex items-center gap-3">
+                <Smartphone className="w-4 h-4 text-[#007AB7]" />
                 <div>
-                  <div className="text-xs font-bold text-slate-800">NFC Entrance Tap-In</div>
-                  <div className="text-[11px] text-slate-500">Allow customers to check in via NFC shelf tags</div>
+                  <div className="font-bold text-white">NFC Entrance Tap-In</div>
+                  <div className="text-[10px] text-slate-400">Allow customers to check in via NFC shelf tags</div>
                 </div>
               </div>
               <input
                 type="checkbox"
                 checked={settings.enableNfc}
                 onChange={(e) => setSettings({ ...settings, enableNfc: e.target.checked })}
-                className="rounded text-emerald-600 focus:ring-emerald-500"
+                className="rounded bg-[#07080B] border-white/20 text-[#007AB7] focus:ring-[#007AB7]"
               />
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
-              <div className="flex items-center gap-2.5">
-                <QrCode className="w-4 h-4 text-slate-600" />
+            <div className="flex items-center justify-between p-3.5 bg-[#111318] rounded-xl border border-white/10">
+              <div className="flex items-center gap-3">
+                <QrCode className="w-4 h-4 text-[#FF2D95]" />
                 <div>
-                  <div className="text-xs font-bold text-slate-800">QR Code Gate Entry</div>
-                  <div className="text-[11px] text-slate-500">Allow shoppers to join queue by scanning entry QR</div>
+                  <div className="font-bold text-white">QR Code Gate Entry</div>
+                  <div className="text-[10px] text-slate-400">Allow shoppers to join queue by scanning entrance QR</div>
                 </div>
               </div>
               <input
                 type="checkbox"
                 checked={settings.enableQr}
                 onChange={(e) => setSettings({ ...settings, enableQr: e.target.checked })}
-                className="rounded text-emerald-600 focus:ring-emerald-500"
+                className="rounded bg-[#07080B] border-white/20 text-[#FF2D95] focus:ring-[#FF2D95]"
               />
             </div>
 
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
-              <div className="flex items-center gap-2.5">
-                <Shield className="w-4 h-4 text-slate-600" />
+            <div className="flex items-center justify-between p-3.5 bg-[#111318] rounded-xl border border-white/10">
+              <div className="flex items-center gap-3">
+                <Shield className="w-4 h-4 text-[#007AB7]" />
                 <div>
-                  <div className="text-xs font-bold text-slate-800">Autonomous Counter Balancing</div>
-                  <div className="text-[11px] text-slate-500">Auto-route express customers to lowest wait lane</div>
+                  <div className="font-bold text-white">Autonomous Counter Balancing</div>
+                  <div className="text-[10px] text-slate-400">Auto-route shoppers to lowest-latency cashier lane</div>
                 </div>
               </div>
               <input
                 type="checkbox"
                 checked={settings.autoAssignCounter}
                 onChange={(e) => setSettings({ ...settings, autoAssignCounter: e.target.checked })}
-                className="rounded text-emerald-600 focus:ring-emerald-500"
+                className="rounded bg-[#07080B] border-white/20 text-[#007AB7] focus:ring-[#007AB7]"
               />
             </div>
           </div>
@@ -275,7 +281,7 @@ export const SettingsPage: React.FC = () => {
           <div className="pt-2">
             <button
               type="submit"
-              className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition shadow-sm"
+              className="w-full py-3 px-4 bg-gradient-to-r from-[#007AB7] to-[#005a87] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow-glow-blue hover:brightness-110 transition"
             >
               <Save className="w-4 h-4" />
               <span>Save Supermarket Parameters</span>
@@ -284,16 +290,16 @@ export const SettingsPage: React.FC = () => {
         </form>
 
         {/* Staff Management */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+        <div className="glass-panel p-6 rounded-2xl border border-white/10 space-y-4 flex flex-col justify-between font-mono">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-purple-600" />
-                <h2 className="text-sm font-bold text-slate-800">Employee & Staff Directory</h2>
+                <Users className="w-4 h-4 text-[#FF2D95]" />
+                <h2 className="text-xs font-bold text-white uppercase tracking-wider">Employee Directory</h2>
               </div>
               <button
                 onClick={() => setShowAddStaffModal(true)}
-                className="flex items-center gap-1 px-2.5 py-1 bg-slate-900 hover:bg-slate-800 text-white rounded-md text-xs font-semibold transition"
+                className="flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-[#FF2D95] to-[#cc2477] text-white rounded-xl text-xs font-semibold shadow-glow-rose hover:brightness-110 transition"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>Add Employee</span>
@@ -302,33 +308,35 @@ export const SettingsPage: React.FC = () => {
 
             <div className="mt-3 space-y-2 max-h-[340px] overflow-y-auto">
               {loading ? (
-                <div className="p-8 text-center text-xs text-slate-400">Loading staff...</div>
+                <div className="p-8 text-center text-xs text-slate-500">Querying employee roster...</div>
               ) : staffList.length === 0 ? (
-                <div className="p-8 text-center text-xs text-slate-400">No staff accounts found.</div>
+                <div className="p-8 text-center text-xs text-slate-500">No staff accounts found.</div>
               ) : (
                 staffList.map((user) => (
                   <div
                     key={user._id || user.id}
-                    className="p-3 rounded-lg border border-slate-100 hover:border-slate-200 bg-slate-50/50 flex items-center justify-between transition"
+                    className="p-3 rounded-xl border border-white/5 hover:border-white/10 bg-[#111318] flex items-center justify-between transition text-xs"
                   >
                     <div>
-                      <div className="text-xs font-bold text-slate-800">{user.name}</div>
-                      <div className="text-[11px] text-slate-500">
-                        {user.email} • <span className="font-mono text-purple-600">{user.role}</span>
+                      <div className="font-bold text-white">{user.name}</div>
+                      <div className="text-[10px] text-slate-400 mt-0.5">
+                        {user.email} • <span className={user.role === 'ADMIN' ? 'text-[#FF2D95]' : 'text-[#007AB7]'}>{user.role}</span>
                       </div>
                     </div>
 
                     <div className="flex items-center gap-2">
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                          user.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'
+                        className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
+                          user.isActive
+                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                            : 'bg-rose-500/10 text-rose-400 border-rose-500/30'
                         }`}
                       >
                         {user.isActive ? 'Active' : 'Inactive'}
                       </span>
                       <button
                         onClick={() => handleToggleStaffStatus(user._id || user.id)}
-                        className="text-[11px] text-slate-400 hover:text-slate-600 font-medium"
+                        className="text-[10px] text-slate-400 hover:text-white px-2 py-0.5 rounded bg-white/5"
                       >
                         Toggle
                       </button>
@@ -339,66 +347,66 @@ export const SettingsPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="text-[11px] text-slate-400 pt-3 border-t border-slate-100">
-            Cashiers can sign in at the checkout terminal; managers can view analytics.
+          <div className="text-[10px] text-slate-500 pt-3 border-t border-white/10">
+            Cashiers authenticate at POS lanes; store managers access analytics and queue matrices.
           </div>
         </div>
       </div>
 
       {/* Add Staff Modal */}
       {showAddStaffModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-base font-bold text-slate-900">Register Staff Member</h3>
-              <button onClick={() => setShowAddStaffModal(false)} className="text-slate-400 hover:text-slate-700">
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="glass-panel rounded-3xl max-w-sm w-full p-6 shadow-glow-dual border border-[#007AB7]/40 space-y-4 font-mono text-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
+              <h3 className="text-sm font-heading font-black text-white uppercase">Register Employee Account</h3>
+              <button onClick={() => setShowAddStaffModal(false)} className="text-slate-400 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleCreateStaff} className="space-y-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Full Name *</label>
+                <label className="block text-slate-400 mb-1">Full Name *</label>
                 <input
                   type="text"
                   required
                   placeholder="Aarav Sharma"
                   value={newStaffForm.name}
                   onChange={(e) => setNewStaffForm({ ...newStaffForm, name: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 bg-[#111318] border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#007AB7]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Work Email *</label>
+                <label className="block text-slate-400 mb-1">Work Email *</label>
                 <input
                   type="email"
                   required
                   placeholder="cashier@smartqueue.com"
                   value={newStaffForm.email}
                   onChange={(e) => setNewStaffForm({ ...newStaffForm, email: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 bg-[#111318] border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#007AB7]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Temporary Password *</label>
+                <label className="block text-slate-400 mb-1">Access Password *</label>
                 <input
                   type="password"
                   required
                   placeholder="••••••••"
                   value={newStaffForm.password}
                   onChange={(e) => setNewStaffForm({ ...newStaffForm, password: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 bg-[#111318] border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#007AB7]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">Role *</label>
+                <label className="block text-slate-400 mb-1">Role Assignment *</label>
                 <select
                   value={newStaffForm.role}
                   onChange={(e) => setNewStaffForm({ ...newStaffForm, role: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none"
+                  className="w-full px-3 py-2 bg-[#111318] border border-white/10 rounded-xl text-white focus:outline-none focus:border-[#007AB7]"
                 >
                   <option value="CASHIER">Cashier (Checkout Lanes)</option>
                   <option value="MANAGER">Store Manager (Operations)</option>
@@ -410,15 +418,15 @@ export const SettingsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowAddStaffModal(false)}
-                  className="flex-1 py-2 px-3 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                  className="flex-1 py-2.5 px-3 bg-[#111318] hover:bg-[#171A21] border border-white/10 rounded-xl text-slate-300 font-semibold transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold transition"
+                  className="flex-1 py-2.5 px-3 bg-gradient-to-r from-[#007AB7] to-[#005a87] text-white rounded-xl font-semibold shadow-glow-blue hover:brightness-110 transition"
                 >
-                  Create Account
+                  Register Staff
                 </button>
               </div>
             </form>

@@ -18,20 +18,26 @@ export const formatDateTime = (dateString: string): string => {
 };
 
 export const getStatusColor = (status: string): string => {
-  switch (status) {
+  switch (status?.toUpperCase()) {
     case 'WAITING':
-      return 'bg-amber-100 text-amber-800 border-amber-300';
+      return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
     case 'CALLED':
-      return 'bg-blue-100 text-blue-800 border-blue-300 animate-pulse';
+      return 'bg-[#007AB7]/20 text-[#38BDF8] border-[#007AB7]/50 shadow-glow-blue animate-pulse';
     case 'PROCESSING':
-      return 'bg-purple-100 text-purple-800 border-purple-300';
+      return 'bg-[#FF2D95]/20 text-[#FF2D95] border-[#FF2D95]/50 shadow-glow-rose';
     case 'COMPLETED':
-      return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+    case 'PAID':
+    case 'OPEN':
+      return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
     case 'SKIPPED':
-      return 'bg-orange-100 text-orange-800 border-orange-300';
+      return 'bg-orange-500/10 text-orange-400 border-orange-500/30';
     case 'CANCELLED':
-      return 'bg-rose-100 text-rose-800 border-rose-300';
+    case 'CLOSED':
+      return 'bg-rose-500/10 text-rose-400 border-rose-500/30';
+    case 'PAUSED':
+    case 'PENDING':
+      return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
     default:
-      return 'bg-gray-100 text-gray-800 border-gray-300';
+      return 'bg-slate-800 text-slate-300 border-white/10';
   }
 };

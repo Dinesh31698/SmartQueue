@@ -1,5 +1,6 @@
 package com.smartqueue.app.ui.screens.queue
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,11 +13,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.smartqueue.app.ui.theme.PrimaryGreen
+import com.smartqueue.app.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,12 +29,17 @@ fun QueueScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
+        containerColor = JetBlack,
         topBar = {
             TopAppBar(
-                title = { Text("Smart Queue Ticket", fontWeight = FontWeight.Bold) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = JetBlack,
+                    titleContentColor = TextPrimary
+                ),
+                title = { Text("Smart Queue Token", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = TextPrimary)
                     }
                 }
             )
@@ -55,9 +62,10 @@ fun QueueScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 16.dp),
-                    shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+                    shape = RoundedCornerShape(24.dp),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceElevated),
+                    border = BorderStroke(1.dp, BorderLuminous),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
                 ) {
                     Column(
                         modifier = Modifier
@@ -66,18 +74,19 @@ fun QueueScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            "YOUR QUEUE NUMBER",
+                            "LIVE QUEUE TOKEN",
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Bold,
-                            color = Color.Gray,
-                            letterSpacing = 1.sp
+                            color = CeruleanGlow,
+                            letterSpacing = 1.5.sp
                         )
 
                         Text(
                             text = uiState.ticket?.ticketNumber ?: "Q-104",
-                            fontSize = 54.sp,
+                            fontSize = 60.sp,
                             fontWeight = FontWeight.Black,
-                            color = MaterialTheme.colorScheme.secondary,
+                            fontFamily = FontFamily.Monospace,
+                            color = TextPrimary,
                             modifier = Modifier.padding(vertical = 8.dp)
                         )
 
@@ -86,45 +95,56 @@ fun QueueScreen(
 
                         Surface(
                             shape = RoundedCornerShape(50),
-                            color = if (isCalled) Color(0xFFFEF3C7) else PrimaryGreen.copy(alpha = 0.15f),
+                            color = if (isCalled) NeonRose else CeruleanBlue.copy(alpha = 0.2f),
+                            border = BorderStroke(1.dp, if (isCalled) NeonRose else CeruleanBlue),
                             modifier = Modifier.padding(bottom = 16.dp)
                         ) {
                             Text(
-                                text = if (isCalled) "PROCEED TO COUNTER" else "WAITING FOR CASHIER",
-                                color = if (isCalled) Color(0xFFD97706) else PrimaryGreen,
+                                text = if (isCalled) "NOW SERVING • HEAD TO COUNTER" else "ESTIMATING BEST LANE",
+                                color = if (isCalled) Color.White else CeruleanGlow,
                                 fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.Monospace,
                                 fontSize = 11.sp,
-                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
                             )
                         }
 
-                        Divider(color = Color.LightGray.copy(alpha = 0.4f), thickness = 1.dp)
+                        HorizontalDivider(color = BorderLuminous, thickness = 1.dp)
 
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(18.dp))
 
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Ahead of You", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
-                                Text("${uiState.ticketsAhead} Shoppers", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                            }
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Est. Wait", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                                Text("Ahead of You", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                                 Text(
-                                    "~${uiState.estimatedWaitMinutes} Mins",
+                                    "${uiState.ticketsAhead} Shoppers",
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp,
-                                    color = PrimaryGreen
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 15.sp,
+                                    color = TextPrimary
                                 )
                             }
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Text("Assigned Lane", style = MaterialTheme.typography.labelSmall, color = Color.Gray)
+                                Text("Est. Wait", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
+                                Text(
+                                    "~${uiState.estimatedWaitMinutes} Mins",
+                                    fontWeight = FontWeight.Black,
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 15.sp,
+                                    color = NeonRose
+                                )
+                            }
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("Assigned Lane", style = MaterialTheme.typography.labelSmall, color = TextSecondary)
                                 Text(
                                     uiState.calledCounterNumber?.let { "Counter $it" } ?: "Auto-Routing",
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp
+                                    fontFamily = FontFamily.Monospace,
+                                    fontSize = 15.sp,
+                                    color = CeruleanGlow
                                 )
                             }
                         }
@@ -133,20 +153,21 @@ fun QueueScreen(
 
                 // Live status instruction
                 Card(
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF3C7)),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = SurfaceSecondary),
+                    border = BorderStroke(1.dp, BorderRose),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
                         modifier = Modifier.padding(14.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(Icons.Default.HourglassTop, contentDescription = null, tint = Color(0xFFD97706))
+                        Icon(Icons.Default.HourglassTop, contentDescription = null, tint = NeonRose)
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            "Continue shopping! You will receive an audio chime and notification when your counter is ready.",
+                            "Feel free to explore! You will receive an audio chime and prompt when your assigned counter calls your token.",
                             fontSize = 12.sp,
-                            color = Color(0xFF92400E)
+                            color = TextSecondary
                         )
                     }
                 }
@@ -155,10 +176,14 @@ fun QueueScreen(
             // Leave Queue Button
             OutlinedButton(
                 onClick = { viewModel.cancelTicket(onNavigateBack) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = TextSecondary),
+                border = BorderStroke(1.dp, BorderLuminous)
             ) {
-                Text("Leave Queue")
+                Text("Leave Queue", fontFamily = FontFamily.Monospace, fontSize = 13.sp)
             }
         }
     }
@@ -167,11 +192,12 @@ fun QueueScreen(
     if (uiState.isCalledAlert) {
         AlertDialog(
             onDismissRequest = { viewModel.dismissCalledAlert() },
+            containerColor = SurfaceElevated,
             icon = {
                 Icon(
                     Icons.Default.NotificationsActive,
                     contentDescription = null,
-                    tint = PrimaryGreen,
+                    tint = NeonRose,
                     modifier = Modifier.size(36.dp)
                 )
             },
@@ -180,29 +206,32 @@ fun QueueScreen(
                     "It's Your Turn!",
                     fontWeight = FontWeight.Black,
                     fontSize = 20.sp,
-                    color = PrimaryGreen
+                    color = NeonRose
                 )
             },
             text = {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "Ticket #${uiState.ticket?.ticketNumber ?: ""}",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = FontFamily.Monospace,
+                        color = TextPrimary
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = "Please proceed to Counter ${uiState.calledCounterNumber ?: "1"} (${uiState.calledCounterName ?: "Express Lane"}) to complete your checkout.",
-                        fontSize = 14.sp
+                        fontSize = 13.sp,
+                        color = TextSecondary
                     )
                 }
             },
             confirmButton = {
                 Button(
                     onClick = { viewModel.dismissCalledAlert() },
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen)
+                    colors = ButtonDefaults.buttonColors(containerColor = CeruleanBlue)
                 ) {
-                    Text("Got It, Heading to Counter")
+                    Text("Got It, Heading to Counter", color = Color.White, fontWeight = FontWeight.Bold)
                 }
             }
         )

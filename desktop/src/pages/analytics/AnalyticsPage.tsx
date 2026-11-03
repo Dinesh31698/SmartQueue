@@ -133,30 +133,35 @@ export const AnalyticsPage: React.FC = () => {
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center">
-            <BarChart3 className="w-5 h-5" />
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <BarChart3 className="w-4 h-4 text-[#007AB7]" />
+            <span className="text-[10px] font-mono uppercase tracking-widest text-[#007AB7] font-semibold">
+              EXECUTIVE INTELLIGENCE FEED
+            </span>
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-slate-900">Business Reports & Supermarket Analytics</h1>
-            <p className="text-sm text-slate-500">Revenue trajectory, hourly queue demand, and staff productivity</p>
-          </div>
+          <h1 className="text-2xl sm:text-3xl font-heading font-black text-white tracking-tight uppercase">
+            Business Reports & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#007AB7] to-[#FF2D95]">Analytics</span>
+          </h1>
+          <p className="text-xs text-slate-400 font-mono mt-0.5">
+            Revenue trajectory, hourly queue demand, and cashier velocity telemetry.
+          </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <button
             onClick={fetchAnalytics}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-sm transition"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#111318] hover:bg-[#171A21] border border-white/10 rounded-xl text-xs font-mono font-semibold text-slate-200 transition"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh</span>
+            <RefreshCw className={`w-3.5 h-3.5 text-[#007AB7] ${loading ? 'animate-spin' : ''}`} />
+            <span>Sync</span>
           </button>
           <button
             onClick={exportCSV}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-semibold shadow-sm transition"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#007AB7] to-[#005a87] text-white rounded-xl text-xs font-mono font-semibold shadow-glow-blue hover:brightness-110 transition"
           >
             <Download className="w-4 h-4" />
-            <span>Export CSV Report</span>
+            <span>Export CSV</span>
           </button>
         </div>
       </div>
@@ -164,62 +169,94 @@ export const AnalyticsPage: React.FC = () => {
       {/* Visual Analytics Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Sales Trajectory AreaChart */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+        <div className="glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
+          <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">7-Day Sales Trajectory</h2>
-              <p className="text-xs text-slate-400">Total verified checkout volume</p>
+              <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+                7-Day Sales Trajectory
+              </h2>
+              <p className="text-xs font-mono text-slate-500">Gross checkout revenue volume</p>
             </div>
-            <TrendingUp className="w-4 h-4 text-emerald-600" />
+            <div className="w-8 h-8 rounded-lg bg-[#007AB7]/20 border border-[#007AB7]/40 flex items-center justify-center text-[#007AB7] shadow-glow-blue">
+              <TrendingUp className="w-4 h-4" />
+            </div>
           </div>
 
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={salesTrends}>
                 <defs>
-                  <linearGradient id="colorSalesAnalytics" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                  <linearGradient id="analyticsSales" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#007AB7" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#007AB7" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="date" stroke="#94a3b8" fontSize={11} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="date" stroke="#64748B" fontSize={10} tickLine={false} />
                 <YAxis
-                  stroke="#94a3b8"
-                  fontSize={11}
+                  stroke="#64748B"
+                  fontSize={10}
+                  tickLine={false}
                   tickFormatter={(val) => `₹${val >= 1000 ? `${(val / 1000).toFixed(0)}k` : val}`}
                 />
                 <Tooltip
                   formatter={(value: number) => [`₹${value.toLocaleString()}`, 'Revenue']}
-                  contentStyle={{ backgroundColor: '#0f172a', border: 'none', borderRadius: '8px', color: '#fff' }}
+                  contentStyle={{
+                    backgroundColor: '#0B0D11',
+                    border: '1px solid rgba(0,122,183,0.4)',
+                    borderRadius: '12px',
+                    color: '#fff',
+                    boxShadow: '0 0 15px rgba(0,122,183,0.3)',
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '12px'
+                  }}
                 />
-                <Area type="monotone" dataKey="revenue" stroke="#2563eb" strokeWidth={2.5} fillOpacity={1} fill="url(#colorSalesAnalytics)" />
+                <Area
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="#007AB7"
+                  strokeWidth={2.5}
+                  fillOpacity={1}
+                  fill="url(#analyticsSales)"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Hourly Queue Demand BarChart */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+        <div className="glass-panel p-6 rounded-2xl border border-white/10 space-y-4">
+          <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">Hourly Queue Traffic Demand</h2>
-              <p className="text-xs text-slate-400">Customer check-in volume throughout operating hours</p>
+              <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+                Hourly Queue Traffic Demand
+              </h2>
+              <p className="text-xs font-mono text-slate-500">Shopper queue tokens issued per operating hour</p>
             </div>
-            <Users className="w-4 h-4 text-purple-600" />
+            <div className="w-8 h-8 rounded-lg bg-[#FF2D95]/20 border border-[#FF2D95]/40 flex items-center justify-center text-[#FF2D95] shadow-glow-rose">
+              <Users className="w-4 h-4" />
+            </div>
           </div>
 
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={queueTraffic}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="hour" stroke="#94a3b8" fontSize={11} />
-                <YAxis stroke="#94a3b8" fontSize={11} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                <XAxis dataKey="hour" stroke="#64748B" fontSize={10} tickLine={false} />
+                <YAxis stroke="#64748B" fontSize={10} tickLine={false} />
                 <Tooltip
-                  formatter={(value: number) => [`${value} tickets`, 'Customers']}
-                  contentStyle={{ backgroundColor: '#0f172a', border: 'none', borderRadius: '8px', color: '#fff' }}
+                  formatter={(value: number) => [`${value} tickets`, 'Queue Volume']}
+                  contentStyle={{
+                    backgroundColor: '#0B0D11',
+                    border: '1px solid rgba(255,45,149,0.4)',
+                    borderRadius: '12px',
+                    color: '#fff',
+                    boxShadow: '0 0 15px rgba(255,45,149,0.3)',
+                    fontFamily: 'JetBrains Mono, monospace',
+                    fontSize: '12px'
+                  }}
                 />
-                <Bar dataKey="tickets" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="tickets" fill="#FF2D95" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -229,29 +266,29 @@ export const AnalyticsPage: React.FC = () => {
       {/* Top Products & Staff Performance Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Products Table */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="glass-panel p-6 rounded-2xl border border-white/10">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10">
             <div className="flex items-center gap-2">
-              <Award className="w-4 h-4 text-amber-500" />
-              <h2 className="text-sm font-bold text-slate-800">Top Selling Products</h2>
+              <Award className="w-4 h-4 text-[#007AB7]" />
+              <h2 className="text-xs font-mono font-bold text-white uppercase tracking-wider">Top Selling SKUs</h2>
             </div>
-            <span className="text-xs text-slate-400 font-mono">By volume</span>
+            <span className="text-[10px] text-slate-500 font-mono">By volume</span>
           </div>
 
-          <table className="w-full text-left text-xs mt-3">
+          <table className="w-full text-left text-xs font-mono mt-3">
             <thead>
-              <tr className="border-b border-slate-100 text-slate-400 uppercase font-semibold">
-                <th className="pb-2">Product Name</th>
-                <th className="pb-2 text-center">Units Sold</th>
-                <th className="pb-2 text-right">Revenue</th>
+              <tr className="border-b border-white/10 text-slate-500 uppercase text-[10px]">
+                <th className="pb-2.5">Product SKU</th>
+                <th className="pb-2.5 text-center">Units Sold</th>
+                <th className="pb-2.5 text-right">Revenue</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-white/5">
               {topProducts.map((p, idx) => (
-                <tr key={p.id || idx} className="hover:bg-slate-50 transition">
-                  <td className="py-2.5 font-medium text-slate-800">{p.name}</td>
-                  <td className="py-2.5 text-center font-bold text-slate-700">{p.totalQuantity}</td>
-                  <td className="py-2.5 text-right font-mono font-semibold text-slate-900">
+                <tr key={p.id || idx} className="hover:bg-white/5 transition">
+                  <td className="py-2.5 text-white">{p.name}</td>
+                  <td className="py-2.5 text-center font-bold text-[#007AB7]">{p.totalQuantity}</td>
+                  <td className="py-2.5 text-right font-bold text-white">
                     {formatCurrency(p.totalRevenue)}
                   </td>
                 </tr>
@@ -261,37 +298,37 @@ export const AnalyticsPage: React.FC = () => {
         </div>
 
         {/* Staff Productivity Table */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="glass-panel p-6 rounded-2xl border border-white/10">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10">
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-emerald-600" />
-              <h2 className="text-sm font-bold text-slate-800">Cashier Throughput & Productivity</h2>
+              <Users className="w-4 h-4 text-[#FF2D95]" />
+              <h2 className="text-xs font-mono font-bold text-white uppercase tracking-wider">Cashier Velocity</h2>
             </div>
-            <span className="text-xs text-slate-400 font-mono">Today's metrics</span>
+            <span className="text-[10px] text-slate-500 font-mono">Real-time throughput</span>
           </div>
 
           {cashierStats.length === 0 ? (
-            <div className="p-8 text-center text-xs text-slate-400">
-              No staff activity recorded yet today.
+            <div className="p-8 text-center text-xs font-mono text-slate-500">
+              No cashier transactions logged yet today.
             </div>
           ) : (
-            <table className="w-full text-left text-xs mt-3">
+            <table className="w-full text-left text-xs font-mono mt-3">
               <thead>
-                <tr className="border-b border-slate-100 text-slate-400 uppercase font-semibold">
-                  <th className="pb-2">Staff Member</th>
-                  <th className="pb-2 text-center">Bills Processed</th>
-                  <th className="pb-2 text-right">Revenue Collected</th>
+                <tr className="border-b border-white/10 text-slate-500 uppercase text-[10px]">
+                  <th className="pb-2.5">Staff Member</th>
+                  <th className="pb-2.5 text-center">Invoices</th>
+                  <th className="pb-2.5 text-right">Settled</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-white/5">
                 {cashierStats.map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50 transition">
+                  <tr key={c.id} className="hover:bg-white/5 transition">
                     <td className="py-2.5">
-                      <div className="font-semibold text-slate-800">{c.name}</div>
-                      <div className="text-[10px] text-slate-400">{c.email}</div>
+                      <div className="font-semibold text-white">{c.name}</div>
+                      <div className="text-[10px] text-slate-500">{c.email}</div>
                     </td>
-                    <td className="py-2.5 text-center font-bold text-slate-700">{c.ordersProcessed}</td>
-                    <td className="py-2.5 text-right font-mono font-semibold text-slate-900">
+                    <td className="py-2.5 text-center font-bold text-[#FF2D95]">{c.ordersProcessed}</td>
+                    <td className="py-2.5 text-right font-bold text-white">
                       {formatCurrency(c.revenueGenerated)}
                     </td>
                   </tr>

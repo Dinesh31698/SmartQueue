@@ -1,6 +1,8 @@
 package com.smartqueue.app.ui.screens.home
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,12 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.smartqueue.app.data.remote.dto.ProductDto
-import com.smartqueue.app.ui.theme.PrimaryGreen
+import com.smartqueue.app.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,27 +38,41 @@ fun HomeScreen(
     var showAiDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = JetBlack,
         topBar = {
             TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = JetBlack,
+                    titleContentColor = TextPrimary
+                ),
                 title = {
                     Column {
-                        Text(
-                            text = uiState.storeName,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "SMART",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Black,
+                                color = TextPrimary
+                            )
+                            Text(
+                                text = "QUEUE",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Black,
+                                color = NeonRose
+                            )
+                        }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier
                                     .size(6.dp)
                                     .clip(CircleShape)
-                                    .background(PrimaryGreen)
+                                    .background(CeruleanBlue)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = "NFC & QR Connected • ${uiState.storeCode}",
+                                text = "NFC & QR Synced • ${uiState.storeName}",
                                 style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                color = CeruleanGlow
                             )
                         }
                     }
@@ -66,21 +83,24 @@ fun HomeScreen(
                         Icon(
                             Icons.Default.AutoAwesome,
                             contentDescription = "AI Assistant",
-                            tint = Color(0xFF8B5CF6)
+                            tint = NeonRose
                         )
                     }
                     IconButton(onClick = onNavigateToScan) {
                         Icon(
                             Icons.Default.QrCodeScanner,
                             contentDescription = "Scan Item",
-                            tint = PrimaryGreen
+                            tint = CeruleanBlue
                         )
                     }
                     BadgedBox(
                         badge = {
                             if (uiState.cartCount > 0) {
-                                Badge(containerColor = Color.Red) {
-                                    Text("${uiState.cartCount}")
+                                Badge(
+                                    containerColor = NeonRose,
+                                    contentColor = Color.White
+                                ) {
+                                    Text("${uiState.cartCount}", fontWeight = FontWeight.Bold)
                                 }
                             }
                         }
@@ -89,7 +109,7 @@ fun HomeScreen(
                             Icon(
                                 Icons.Default.ShoppingBag,
                                 contentDescription = "Cart",
-                                tint = PrimaryGreen
+                                tint = CeruleanBlue
                             )
                         }
                     }
@@ -110,10 +130,18 @@ fun HomeScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 6.dp),
-                placeholder = { Text("Search products, brands, or barcodes...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
+                placeholder = { Text("Search products, brands, or barcodes...", color = TextMuted) },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = CeruleanBlue) },
+                shape = RoundedCornerShape(14.dp),
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = SurfaceElevated,
+                    unfocusedContainerColor = SurfaceElevated,
+                    focusedTextColor = TextPrimary,
+                    unfocusedTextColor = TextPrimary,
+                    focusedBorderColor = CeruleanBlue,
+                    unfocusedBorderColor = BorderLuminous
+                )
             )
 
             // Category Chips Row
@@ -126,14 +154,36 @@ fun HomeScreen(
                         FilterChip(
                             selected = uiState.selectedCategory == null,
                             onClick = { viewModel.onCategorySelected(null) },
-                            label = { Text("All") }
+                            label = { Text("All Products", fontSize = 12.sp) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = CeruleanBlue,
+                                selectedLabelColor = Color.White,
+                                containerColor = SurfaceElevated,
+                                labelColor = TextSecondary
+                            ),
+                            border = FilterChipDefaults.filterChipBorder(
+                                enabled = true,
+                                selected = uiState.selectedCategory == null,
+                                borderColor = if (uiState.selectedCategory == null) CeruleanBlue else BorderLuminous
+                            )
                         )
                     }
                     items(uiState.categories) { cat ->
                         FilterChip(
                             selected = uiState.selectedCategory == cat._id,
                             onClick = { viewModel.onCategorySelected(cat._id) },
-                            label = { Text(cat.name) }
+                            label = { Text(cat.name, fontSize = 12.sp) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = CeruleanBlue,
+                                selectedLabelColor = Color.White,
+                                containerColor = SurfaceElevated,
+                                labelColor = TextSecondary
+                            ),
+                            border = FilterChipDefaults.filterChipBorder(
+                                enabled = true,
+                                selected = uiState.selectedCategory == cat._id,
+                                borderColor = if (uiState.selectedCategory == cat._id) CeruleanBlue else BorderLuminous
+                            )
                         )
                     }
                 }
@@ -145,33 +195,49 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .padding(vertical = 6.dp)
                     .clickable { showAiDialog = true },
-                shape = RoundedCornerShape(14.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFF3E8FF))
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = SurfaceElevated),
+                border = BorderStroke(1.dp, BorderRose)
             ) {
                 Row(
                     modifier = Modifier.padding(14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        Icons.Default.AutoAwesome,
-                        contentDescription = null,
-                        tint = Color(0xFF7C3AED),
-                        modifier = Modifier.size(24.dp)
-                    )
+                    Box(
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(NeonRose.copy(alpha = 0.2f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.AutoAwesome,
+                            contentDescription = null,
+                            tint = NeonRose,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
                     Spacer(modifier = Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            "Smart Shopping Assistant",
+                            "AI Supermarket Copilot",
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF5B21B6),
+                            color = TextPrimary,
                             fontSize = 14.sp
                         )
                         Text(
-                            "Ask for healthy picks, recipes, or aisle locations",
+                            "Tap to ask aisle directions, dietary advice or recipe ingredients",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFF6D28D9)
+                            color = TextSecondary,
+                            fontSize = 11.sp
                         )
                     }
+                    Icon(
+                        Icons.Default.ChevronRight,
+                        contentDescription = null,
+                        tint = NeonRose,
+                        modifier = Modifier.size(18.dp)
+                    )
                 }
             }
 
@@ -179,19 +245,20 @@ fun HomeScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 4.dp),
+                    .padding(top = 10.dp, bottom = 6.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "Supermarket Aisle Products",
+                    "Supermarket Catalog",
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = TextPrimary
                 )
                 Text(
                     "${uiState.products.size} items",
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray
+                    color = CeruleanGlow
                 )
             }
 
@@ -200,7 +267,7 @@ fun HomeScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = PrimaryGreen)
+                    CircularProgressIndicator(color = CeruleanBlue)
                 }
             } else if (uiState.products.isEmpty()) {
                 Box(
@@ -213,20 +280,20 @@ fun HomeScreen(
                         Icon(
                             Icons.Default.ShoppingBag,
                             contentDescription = null,
-                            tint = Color.LightGray,
+                            tint = TextMuted,
                             modifier = Modifier.size(48.dp)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             "No products found",
                             fontWeight = FontWeight.SemiBold,
-                            color = Color.Gray
+                            color = TextSecondary
                         )
                     }
                 }
             } else {
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(uiState.products) { product ->
@@ -244,15 +311,16 @@ fun HomeScreen(
     if (showAiDialog) {
         AlertDialog(
             onDismissRequest = { showAiDialog = false },
+            containerColor = SurfaceElevated,
             title = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         Icons.Default.AutoAwesome,
                         contentDescription = null,
-                        tint = Color(0xFF7C3AED)
+                        tint = NeonRose
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("AI Shopping Assistant", fontWeight = FontWeight.Bold)
+                    Text("AI Shopping Assistant", fontWeight = FontWeight.Bold, color = TextPrimary)
                 }
             },
             text = {
@@ -261,9 +329,17 @@ fun HomeScreen(
                         value = aiQueryInput,
                         onValueChange = { aiQueryInput = it },
                         modifier = Modifier.fillMaxWidth(),
-                        placeholder = { Text("e.g. Where is milk? or Healthy snacks under $5") },
+                        placeholder = { Text("e.g. Gluten-free snacks under ₹100 or where is olive oil?", color = TextMuted, fontSize = 12.sp) },
                         singleLine = false,
-                        maxLines = 3
+                        maxLines = 3,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = SurfaceSecondary,
+                            unfocusedContainerColor = SurfaceSecondary,
+                            focusedTextColor = TextPrimary,
+                            unfocusedTextColor = TextPrimary,
+                            focusedBorderColor = NeonRose,
+                            unfocusedBorderColor = BorderRose
+                        )
                     )
 
                     if (uiState.isAiThinking) {
@@ -275,7 +351,7 @@ fun HomeScreen(
                         ) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(24.dp),
-                                color = Color(0xFF7C3AED)
+                                color = NeonRose
                             )
                         }
                     }
@@ -283,15 +359,16 @@ fun HomeScreen(
                     uiState.aiAssistantReply?.let { reply ->
                         Spacer(modifier = Modifier.height(12.dp))
                         Surface(
-                            shape = RoundedCornerShape(10.dp),
-                            color = Color(0xFFF3E8FF),
+                            shape = RoundedCornerShape(12.dp),
+                            color = SurfaceSecondary,
+                            border = BorderStroke(1.dp, BorderRose),
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
                                 text = reply,
                                 modifier = Modifier.padding(12.dp),
                                 fontSize = 13.sp,
-                                color = Color(0xFF4C1D95)
+                                color = TextPrimary
                             )
                         }
                     }
@@ -302,9 +379,9 @@ fun HomeScreen(
                     onClick = {
                         viewModel.queryAIAssistant(aiQueryInput)
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF7C3AED))
+                    colors = ButtonDefaults.buttonColors(containerColor = NeonRose)
                 ) {
-                    Text("Ask AI")
+                    Text("Ask Copilot", fontWeight = FontWeight.Bold, color = Color.White)
                 }
             },
             dismissButton = {
@@ -313,7 +390,7 @@ fun HomeScreen(
                     viewModel.clearAiReply()
                     aiQueryInput = ""
                 }) {
-                    Text("Close")
+                    Text("Close", color = TextSecondary)
                 }
             }
         )
@@ -327,27 +404,31 @@ fun ProductItemCard(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = SurfaceElevated),
+        border = BorderStroke(1.dp, BorderLuminous),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.LightGray.copy(alpha = 0.25f)),
+                    .size(52.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(SurfaceSecondary)
+                    .border(BorderStroke(1.dp, BorderLuminous), RoundedCornerShape(12.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = product.name.take(2).uppercase(),
-                    fontWeight = FontWeight.Bold,
-                    color = Color.DarkGray
+                    fontWeight = FontWeight.Black,
+                    fontFamily = FontFamily.Monospace,
+                    color = CeruleanGlow,
+                    fontSize = 16.sp
                 )
             }
 
@@ -356,32 +437,37 @@ fun ProductItemCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     product.name,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
+                    color = TextPrimary,
                     maxLines = 2
                 )
                 Text(
                     "${product.brand} • ${product.aisleLocation ?: "Aisle 1"}",
                     style = MaterialTheme.typography.labelSmall,
-                    color = Color.Gray
+                    color = TextSecondary
                 )
+
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         "₹${product.price.toInt()}",
-                        fontWeight = FontWeight.Bold,
-                        color = PrimaryGreen,
-                        fontSize = 15.sp
+                        fontWeight = FontWeight.Black,
+                        fontFamily = FontFamily.Monospace,
+                        color = CeruleanGlow,
+                        fontSize = 16.sp
                     )
                     if (product.isHealthyPick) {
                         Spacer(modifier = Modifier.width(8.dp))
                         Surface(
-                            shape = RoundedCornerShape(4.dp),
-                            color = PrimaryGreen.copy(alpha = 0.15f)
+                            shape = RoundedCornerShape(6.dp),
+                            color = NeonRose.copy(alpha = 0.15f),
+                            border = BorderStroke(1.dp, BorderRose)
                         ) {
                             Text(
-                                "Healthy",
-                                color = PrimaryGreen,
+                                "Healthy Pick",
+                                color = NeonRose,
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
@@ -393,11 +479,11 @@ fun ProductItemCard(
 
             Button(
                 onClick = onAddToCart,
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = PrimaryGreen),
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = CeruleanBlue),
                 contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
             ) {
-                Text("+ Add", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                Text("+ Add", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = Color.White)
             }
         }
     }

@@ -4,6 +4,7 @@ import { AuthLayout } from '../layouts/AuthLayout';
 import { MainLayout } from '../layouts/MainLayout';
 import { ProtectedRoute } from './ProtectedRoute';
 
+import { LandingPage } from '../pages/public/LandingPage';
 import { LoginPage } from '../pages/auth/LoginPage';
 import { CashierDashboardPage } from '../pages/cashier/CashierDashboardPage';
 import { ManagerDashboardPage } from '../pages/manager/ManagerDashboardPage';
@@ -16,6 +17,9 @@ import { SettingsPage } from '../pages/settings/SettingsPage';
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
+      {/* Public Landing Page */}
+      <Route path="/" element={<LandingPage />} />
+
       {/* Public Authentication Routes */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<LoginPage />} />
@@ -43,8 +47,7 @@ export const AppRoutes: React.FC = () => {
       </Route>
 
       {/* Default Fallback */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
