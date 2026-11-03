@@ -72,9 +72,19 @@ const inventorySchema = new mongoose.Schema(
       type: Number,
       default: 10,
     },
+    minStockAlert: {
+      type: Number,
+      default: function () {
+        return this.minThreshold || 10;
+      },
+    },
     lastRestockedAt: {
       type: Date,
       default: null,
+    },
+    aisleLocation: {
+      type: String,
+      default: 'Aisle 1',
     },
     stockMovements: [stockMovementSchema],
   },
