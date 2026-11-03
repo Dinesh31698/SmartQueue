@@ -31,8 +31,11 @@ const createOrder = async (req, res, next) => {
       orderItems = cart.items.map((item) => ({
         productId: item.productId._id,
         name: item.productId.name,
+        productName: item.productId.name,
         barcode: item.productId.barcode,
+        brand: item.productId.brand || '',
         price: item.priceAtAdd,
+        unitPrice: item.priceAtAdd,
         quantity: item.quantity,
         subtotal: item.priceAtAdd * item.quantity,
       }));
@@ -44,8 +47,11 @@ const createOrder = async (req, res, next) => {
         orderItems.push({
           productId: product._id,
           name: product.name,
+          productName: product.name,
           barcode: product.barcode,
+          brand: product.brand || '',
           price: product.price,
+          unitPrice: product.price,
           quantity: item.quantity || 1,
           subtotal: product.price * (item.quantity || 1),
         });
@@ -72,12 +78,15 @@ const createOrder = async (req, res, next) => {
       storeId: storeId || req.user.storeId,
       items: orderItems,
       subtotal,
+      tax: taxAmount,
       taxAmount,
+      discount: discountAmount,
       discountAmount,
+      totalAmount: finalTotal,
       finalTotal,
       paymentMethod,
       paymentStatus: paymentMethod === 'PENDING' ? 'PENDING' : 'PAID',
-      orderStatus: 'PENDING',
+      orderStatus: 'PLACED',
       notes,
     });
 
@@ -85,11 +94,14 @@ const createOrder = async (req, res, next) => {
     for (const item of orderItems) {
       const inv = await Inventory.findOne({ productId: item.productId, storeId: order.storeId });
       if (inv) {
-        const balance = Math.max(0, inv.currentStock - item.quantity);
+        const prevStock = inv.currentStock;
+        const balance = Math.max(0, prevStock - item.quantity);
         inv.currentStock = balance;
         inv.stockMovements.push({
           type: 'SALE',
           quantity: -item.quantity,
+          previousQuantity: prevStock,
+          newQuantity: balance,
           balanceAfter: balance,
           reason: `Order #${order.orderNumber}`,
           recordedBy: customerId,

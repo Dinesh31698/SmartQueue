@@ -43,6 +43,12 @@ const queueTicketSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    estimatedWaitTimeMinutes: {
+      type: Number,
+      default: function () {
+        return this.estimatedWaitMinutes || 0;
+      },
+    },
     joinedAt: {
       type: Date,
       default: Date.now,

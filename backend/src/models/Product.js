@@ -31,6 +31,12 @@ const productSchema = new mongoose.Schema(
       trim: true,
       index: true,
     },
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+      index: true,
+      default: null,
+    },
     price: {
       type: Number,
       required: [true, 'Product price is required'],
@@ -50,9 +56,31 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 10,
     },
+    unit: {
+      type: String,
+      default: 'item',
+    },
+    aisleLocation: {
+      type: String,
+      default: 'Aisle 1',
+    },
+    taxPercent: {
+      type: Number,
+      default: 5,
+    },
+    description: {
+      type: String,
+      default: '',
+    },
     isAvailable: {
       type: Boolean,
       default: true,
+      index: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+      index: true,
     },
     imageUrl: {
       type: String,
@@ -64,6 +92,10 @@ const productSchema = new mongoose.Schema(
       protein: { type: String, default: '0g' },
       fat: { type: String, default: '0g' },
       sodium: { type: String, default: '0mg' },
+    },
+    nutrition: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
     },
     isHealthyPick: {
       type: Boolean,

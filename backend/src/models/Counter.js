@@ -39,6 +39,11 @@ const counterSchema = new mongoose.Schema(
       ref: 'QueueTicket',
       default: null,
     },
+    currentServingTicketId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'QueueTicket',
+      default: null,
+    },
   },
   {
     timestamps: true,

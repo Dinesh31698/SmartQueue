@@ -7,9 +7,15 @@ const orderItemSchema = new mongoose.Schema(
       ref: 'Product',
       required: true,
     },
+    name: {
+      type: String,
+      default: '',
+    },
     productName: {
       type: String,
-      required: true,
+      default: function () {
+        return this.name || '';
+      },
     },
     barcode: {
       type: String,
@@ -24,10 +30,15 @@ const orderItemSchema = new mongoose.Schema(
       required: true,
       min: 1,
     },
+    price: {
+      type: Number,
+      default: 0,
+    },
     unitPrice: {
       type: Number,
-      required: true,
-      min: 0,
+      default: function () {
+        return this.price || 0;
+      },
     },
     subtotal: {
       type: Number,

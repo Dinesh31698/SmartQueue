@@ -32,7 +32,7 @@ const cartSchema = new mongoose.Schema(
     storeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Store',
-      required: true,
+      default: null,
       index: true,
     },
     items: [cartItemSchema],

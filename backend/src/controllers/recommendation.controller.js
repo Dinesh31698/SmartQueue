@@ -5,7 +5,10 @@ const aiAssistant = require('../services/aiAssistant');
 const getTrending = async (req, res, next) => {
   try {
     const { storeId, limit = 8 } = req.query;
-    const filter = { isActive: true, isTrending: true };
+    const filter = {
+      $or: [{ isActive: true }, { isAvailable: true }, { isActive: { $exists: false } }],
+      isTrending: true,
+    };
     if (storeId) filter.storeId = storeId;
 
     let products = await Product.find(filter)
@@ -14,7 +17,9 @@ const getTrending = async (req, res, next) => {
 
     // Fallback if none flagged
     if (products.length === 0) {
-      products = await Product.find({ isActive: true }).limit(parseInt(limit, 10));
+      products = await Product.find({
+        $or: [{ isActive: true }, { isAvailable: true }, { isActive: { $exists: false } }],
+      }).limit(parseInt(limit, 10));
     }
 
     res.status(200).json({ success: true, data: products });
@@ -27,7 +32,10 @@ const getTrending = async (req, res, next) => {
 const getHealthyPicks = async (req, res, next) => {
   try {
     const { storeId, limit = 8 } = req.query;
-    const filter = { isActive: true, isHealthyPick: true };
+    const filter = {
+      $or: [{ isActive: true }, { isAvailable: true }, { isActive: { $exists: false } }],
+      isHealthyPick: true,
+    };
     if (storeId) filter.storeId = storeId;
 
     let products = await Product.find(filter)
@@ -35,7 +43,9 @@ const getHealthyPicks = async (req, res, next) => {
       .limit(parseInt(limit, 10));
 
     if (products.length === 0) {
-      products = await Product.find({ isActive: true }).limit(parseInt(limit, 10));
+      products = await Product.find({
+        $or: [{ isActive: true }, { isAvailable: true }, { isActive: { $exists: false } }],
+      }).limit(parseInt(limit, 10));
     }
 
     res.status(200).json({ success: true, data: products });

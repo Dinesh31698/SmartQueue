@@ -13,11 +13,21 @@ const stockMovementSchema = new mongoose.Schema(
     },
     previousQuantity: {
       type: Number,
-      required: true,
+      default: function () {
+        return this.balanceAfter !== undefined ? this.balanceAfter - this.quantity : 0;
+      },
     },
     newQuantity: {
       type: Number,
-      required: true,
+      default: function () {
+        return this.balanceAfter !== undefined ? this.balanceAfter : this.quantity;
+      },
+    },
+    balanceAfter: {
+      type: Number,
+      default: function () {
+        return this.newQuantity;
+      },
     },
     reason: {
       type: String,

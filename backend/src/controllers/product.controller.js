@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const { Product, Inventory, Category } = require('../models');
 
 // GET /api/products
@@ -15,21 +16,52 @@ const listProducts = async (req, res, next) => {
       sortOrder = 'asc',
     } = req.query;
 
-    const filter = { isActive: true };
+    const filterConditions = [
+      {
+        $or: [
+          { isActive: true },
+          { isAvailable: true },
+          { isActive: { $exists: false } },
+        ],
+      },
+    ];
 
-    if (storeId) filter.storeId = storeId;
-    if (categoryId) filter.categoryId = categoryId;
-    if (isHealthyPick === 'true') filter.isHealthyPick = true;
-    if (isTrending === 'true') filter.isTrending = true;
+    if (storeId) filterConditions.push({ storeId });
+    if (isHealthyPick === 'true') filterConditions.push({ isHealthyPick: true });
+    if (isTrending === 'true') filterConditions.push({ isTrending: true });
 
-    if (search) {
-      filter.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { brand: { $regex: search, $options: 'i' } },
-        { barcode: { $regex: search, $options: 'i' } },
-        { tags: { $in: [new RegExp(search, 'i')] } },
-      ];
+    if (categoryId) {
+      if (mongoose.Types.ObjectId.isValid(categoryId)) {
+        filterConditions.push({
+          $or: [{ categoryId: new mongoose.Types.ObjectId(categoryId) }, { category: categoryId }],
+        });
+      } else {
+        const cat = await Category.findOne({
+          $or: [{ slug: categoryId }, { name: new RegExp(`^${categoryId}$`, 'i') }],
+        });
+        if (cat) {
+          filterConditions.push({
+            $or: [{ categoryId: cat._id }, { category: cat.name }, { category: new RegExp(cat.name, 'i') }],
+          });
+        } else {
+          filterConditions.push({ category: new RegExp(categoryId, 'i') });
+        }
+      }
     }
+
+    if (search && search.trim()) {
+      const s = search.trim();
+      filterConditions.push({
+        $or: [
+          { name: { $regex: s, $options: 'i' } },
+          { brand: { $regex: s, $options: 'i' } },
+          { barcode: { $regex: s, $options: 'i' } },
+          { category: { $regex: s, $options: 'i' } },
+        ],
+      });
+    }
+
+    const filter = filterConditions.length > 1 ? { $and: filterConditions } : filterConditions[0];
 
     const sort = {};
     sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
@@ -52,7 +84,7 @@ const listProducts = async (req, res, next) => {
 
     const productsWithStock = products.map((p) => {
       const obj = p.toObject();
-      obj.currentStock = stockMap[p._id.toString()] !== undefined ? stockMap[p._id.toString()] : 0;
+      obj.currentStock = stockMap[p._id.toString()] !== undefined ? stockMap[p._id.toString()] : (obj.stockQuantity || 0);
       return obj;
     });
 
@@ -62,7 +94,7 @@ const listProducts = async (req, res, next) => {
         products: productsWithStock,
         total,
         page: parseInt(page, 10),
-        pages: Math.ceil(total / limit),
+        pages: Math.ceil(total / limit) || 1,
       },
     });
   } catch (err) {
@@ -76,7 +108,14 @@ const getByBarcode = async (req, res, next) => {
     const { barcode } = req.params;
     const { storeId } = req.query;
 
-    const filter = { barcode: barcode.trim(), isActive: true };
+    const filter = {
+      barcode: barcode.trim(),
+      $or: [
+        { isActive: true },
+        { isAvailable: true },
+        { isActive: { $exists: false } },
+      ],
+    };
     if (storeId) filter.storeId = storeId;
 
     const product = await Product.findOne(filter)

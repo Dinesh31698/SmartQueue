@@ -13,9 +13,9 @@ export const LoginPage: React.FC = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleQuickFill = (roleEmail: string) => {
+  const handleQuickFill = (roleEmail: string, rolePass: string) => {
     setEmail(roleEmail);
-    setPassword('Pass123!@#');
+    setPassword(rolePass);
     setError(null);
   };
 
@@ -60,19 +60,19 @@ export const LoginPage: React.FC = () => {
         <div className="grid grid-cols-3 gap-2">
           <button
             type="button"
-            onClick={() => handleQuickFill('cashier@smartqueue.com')}
+            onClick={() => handleQuickFill('cashier1@smartqueue.com', 'Cashier@123')}
             className="p-2 rounded-xl bg-[#111318] hover:bg-[#171A21] border border-white/10 hover:border-[#007AB7]/50 transition text-left space-y-1"
           >
             <div className="flex items-center gap-1 text-[11px] font-semibold text-white">
               <Store className="w-3 h-3 text-[#007AB7]" />
               <span>Cashier</span>
             </div>
-            <div className="text-[9px] font-mono text-slate-400 truncate">cashier@...</div>
+            <div className="text-[9px] font-mono text-slate-400 truncate">cashier1@...</div>
           </button>
 
           <button
             type="button"
-            onClick={() => handleQuickFill('manager@smartqueue.com')}
+            onClick={() => handleQuickFill('manager@smartqueue.com', 'Manager@123')}
             className="p-2 rounded-xl bg-[#111318] hover:bg-[#171A21] border border-white/10 hover:border-[#007AB7]/50 transition text-left space-y-1"
           >
             <div className="flex items-center gap-1 text-[11px] font-semibold text-white">
@@ -84,7 +84,7 @@ export const LoginPage: React.FC = () => {
 
           <button
             type="button"
-            onClick={() => handleQuickFill('admin@smartqueue.com')}
+            onClick={() => handleQuickFill('admin@smartqueue.com', 'Admin@123')}
             className="p-2 rounded-xl bg-[#111318] hover:bg-[#171A21] border border-white/10 hover:border-[#FF2D95]/50 transition text-left space-y-1"
           >
             <div className="flex items-center gap-1 text-[11px] font-semibold text-white">

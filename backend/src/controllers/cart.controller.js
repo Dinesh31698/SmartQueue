@@ -1,4 +1,4 @@
-const { Cart, Product, Inventory } = require('../models');
+const { Cart, Product, Inventory, Store } = require('../models');
 
 // Helper to recalculate cart subtotal
 const calculateTotals = (cart) => {
@@ -20,7 +20,13 @@ const getCart = async (req, res, next) => {
     });
 
     if (!cart) {
-      cart = await Cart.create({ userId, items: [], subtotal: 0 });
+      const defaultStore = await Store.findOne({ isActive: true });
+      cart = await Cart.create({
+        userId,
+        storeId: defaultStore ? defaultStore._id : null,
+        items: [],
+        subtotal: 0,
+      });
     }
 
     // Filter out any items where productId was deleted or null
@@ -50,17 +56,23 @@ const addItem = async (req, res, next) => {
     const { productId, quantity = 1 } = req.body;
 
     const product = await Product.findById(productId);
-    if (!product || !product.isActive) {
+    if (!product || (product.isActive === false && product.isAvailable === false)) {
       return res.status(404).json({ success: false, error: 'Product not available.' });
     }
 
     // Check inventory stock
     const inventory = await Inventory.findOne({ productId: product._id });
-    const availableStock = inventory ? inventory.currentStock : 999;
+    const availableStock = inventory ? inventory.currentStock : (product.stockQuantity || 999);
 
     let cart = await Cart.findOne({ userId });
     if (!cart) {
-      cart = new Cart({ userId, items: [], subtotal: 0 });
+      const defaultStore = await Store.findOne({ isActive: true });
+      cart = new Cart({
+        userId,
+        storeId: defaultStore ? defaultStore._id : product.storeId,
+        items: [],
+        subtotal: 0,
+      });
     }
 
     const existingIndex = cart.items.findIndex(

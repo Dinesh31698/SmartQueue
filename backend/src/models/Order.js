@@ -48,30 +48,49 @@ const orderSchema = new mongoose.Schema(
       default: 0,
       min: 0,
     },
+    discountAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
     tax: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    taxAmount: {
       type: Number,
       default: 0,
       min: 0,
     },
     totalAmount: {
       type: Number,
-      required: true,
+      default: function () {
+        return this.finalTotal || 0;
+      },
+      min: 0,
+    },
+    finalTotal: {
+      type: Number,
+      default: function () {
+        return this.totalAmount || 0;
+      },
       min: 0,
     },
     paymentMethod: {
       type: String,
-      enum: ['UPI', 'CARD', 'CASH', 'SELF_CHECKOUT'],
-      required: true,
+      enum: ['UPI', 'CARD', 'CASH', 'SELF_CHECKOUT', 'PENDING'],
+      default: 'UPI',
     },
     paymentStatus: {
       type: String,
-      enum: ['PENDING', 'COMPLETED', 'FAILED'],
+      enum: ['PENDING', 'PAID', 'COMPLETED', 'FAILED'],
       default: 'PENDING',
       index: true,
     },
     orderStatus: {
       type: String,
-      enum: ['PLACED', 'VERIFIED', 'COMPLETED', 'CANCELLED'],
+      enum: ['PENDING', 'PLACED', 'VERIFIED', 'COMPLETED', 'CANCELLED'],
       default: 'PLACED',
       index: true,
     },

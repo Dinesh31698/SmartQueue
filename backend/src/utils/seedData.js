@@ -119,8 +119,10 @@ const seedSupermarketData = async () => {
       { name: 'Personal Care', slug: 'personal-care', icon: 'heart' },
     ];
 
+    const categoryMap = {};
     for (const cat of categories) {
-      await Category.findOneAndUpdate({ slug: cat.slug }, cat, { upsert: true });
+      const savedCat = await Category.findOneAndUpdate({ slug: cat.slug }, cat, { upsert: true, new: true });
+      categoryMap[cat.name] = savedCat._id;
     }
 
     // 5. Seed Products
@@ -134,8 +136,13 @@ const seedSupermarketData = async () => {
         costPrice: 62,
         stockQuantity: 50,
         minStockThreshold: 15,
+        unit: 'L',
+        aisleLocation: 'Aisle 1 - Dairy',
+        taxPercent: 5,
         isHealthyPick: true,
         isTrending: true,
+        isActive: true,
+        isAvailable: true,
         dietaryFlags: { isOrganic: false, isGlutenFree: true, isVegan: false },
         nutritionalInfo: { calories: 58, sugar: '4.7g', protein: '3.1g', fat: '3.0g', sodium: '45mg' },
       },
@@ -148,8 +155,13 @@ const seedSupermarketData = async () => {
         costPrice: 240,
         stockQuantity: 30,
         minStockThreshold: 10,
+        unit: 'kg',
+        aisleLocation: 'Aisle 2 - Grains',
+        taxPercent: 5,
         isHealthyPick: true,
         isTrending: true,
+        isActive: true,
+        isAvailable: true,
         dietaryFlags: { isOrganic: false, isGlutenFree: false, isVegan: true },
         nutritionalInfo: { calories: 340, sugar: '2g', protein: '11g', fat: '1.5g', sodium: '10mg' },
       },
@@ -162,8 +174,13 @@ const seedSupermarketData = async () => {
         costPrice: 22,
         stockQuantity: 100,
         minStockThreshold: 20,
+        unit: 'kg',
+        aisleLocation: 'Aisle 2 - Spices',
+        taxPercent: 5,
         isHealthyPick: false,
         isTrending: false,
+        isActive: true,
+        isAvailable: true,
         dietaryFlags: { isOrganic: false, isGlutenFree: true, isVegan: true },
         nutritionalInfo: { calories: 0, sugar: '0g', protein: '0g', fat: '0g', sodium: '387mg' },
       },
@@ -176,8 +193,13 @@ const seedSupermarketData = async () => {
         costPrice: 48,
         stockQuantity: 40,
         minStockThreshold: 12,
+        unit: 'pack',
+        aisleLocation: 'Aisle 3 - Instant Foods',
+        taxPercent: 12,
         isHealthyPick: false,
         isTrending: true,
+        isActive: true,
+        isAvailable: true,
         dietaryFlags: { isOrganic: false, isGlutenFree: false, isVegan: true },
         nutritionalInfo: { calories: 427, sugar: '2.5g', protein: '8g', fat: '15.7g', sodium: '850mg' },
       },
@@ -190,8 +212,13 @@ const seedSupermarketData = async () => {
         costPrice: 40,
         stockQuantity: 25,
         minStockThreshold: 8,
+        unit: 'pack',
+        aisleLocation: 'Aisle 4 - Bakery',
+        taxPercent: 5,
         isHealthyPick: true,
         isTrending: true,
+        isActive: true,
+        isAvailable: true,
         dietaryFlags: { isOrganic: false, isGlutenFree: false, isVegan: true },
         nutritionalInfo: { calories: 245, sugar: '3g', protein: '9.2g', fat: '1.8g', sodium: '320mg' },
       },
@@ -204,17 +231,23 @@ const seedSupermarketData = async () => {
         costPrice: 275,
         stockQuantity: 35,
         minStockThreshold: 10,
+        unit: 'pack',
+        aisleLocation: 'Aisle 5 - Beverages',
+        taxPercent: 5,
         isHealthyPick: true,
         isTrending: false,
+        isActive: true,
+        isAvailable: true,
         dietaryFlags: { isOrganic: false, isGlutenFree: true, isVegan: true },
         nutritionalInfo: { calories: 0, sugar: '0g', protein: '0g', fat: '0g', sodium: '0mg' },
       },
     ];
 
     for (const p of productsData) {
+      const categoryId = categoryMap[p.category] || null;
       const product = await Product.findOneAndUpdate(
         { storeId: store._id, barcode: p.barcode },
-        { ...p, storeId: store._id },
+        { ...p, storeId: store._id, categoryId },
         { upsert: true, new: true }
       );
 
@@ -226,6 +259,7 @@ const seedSupermarketData = async () => {
           productId: product._id,
           currentStock: product.stockQuantity,
           minThreshold: product.minStockThreshold,
+          aisleLocation: p.aisleLocation,
           lastRestockedAt: new Date(),
         },
         { upsert: true }
