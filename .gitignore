@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing and coverage
+coverage/
+*.lcov
+.nyc_output
+
+# Production builds
+dist/
+build/
+out/
+.next/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# IDE and Editor files
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Android build outputs and caches
+mobile/SmartQueueAndroid/.gradle/
+mobile/SmartQueueAndroid/build/
+mobile/SmartQueueAndroid/*/build/
+mobile/SmartQueueAndroid/local.properties
+mobile/SmartQueueAndroid/.idea/
+mobile/SmartQueueAndroid/*.iml
+mobile/SmartQueueAndroid/*/*.iml
+mobile/SmartQueueAndroid/.cxx/
+mobile/SmartQueueAndroid/captures/
+
+# OS metadata
+[Dd]esktop.ini
+$RECYCLE.BIN/

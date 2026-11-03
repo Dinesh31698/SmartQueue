@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">SmartQueue</string>
+    <string name="title_home">Supermarket</string>
+    <string name="title_scan">Scan Barcode</string>
+    <string name="title_cart">My Cart</string>
+    <string name="title_queue">Smart Queue</string>
+    <string name="title_profile">Profile</string>
+    <string name="nfc_detected_toast">Store Tag Detected: %1$s</string>
+    <string name="camera_permission_required">Camera permission is required to scan supermarket barcodes.</string>
+</resources>

@@ -1,0 +1,32 @@
+{
+  "name": "smartqueue-monorepo",
+  "version": "1.0.0",
+  "description": "SmartQueue — AI-Powered Smart Supermarket Shopping and Queue Management System",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "desktop"
+  ],
+  "scripts": {
+    "start:backend": "npm --prefix backend start",
+    "dev:backend": "npm --prefix backend run dev",
+    "test:backend": "npm --prefix backend test",
+    "dev:desktop": "npm --prefix desktop run dev",
+    "build:desktop": "npm --prefix desktop run build",
+    "test:desktop": "npm --prefix desktop run test"
+  },
+  "keywords": [
+    "smartqueue",
+    "supermarket",
+    "queue-management",
+    "ai",
+    "react",
+    "android",
+    "kotlin",
+    "nodejs",
+    "express",
+    "mongodb"
+  ],
+  "author": "SmartQueue Team",
+  "license": "UNLICENSED"
+}
